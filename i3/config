@@ -37,7 +37,7 @@ exec --no-startup-id nm-applet
 exec --no-startup-id redshift
 
 
-exec --no-startup-id lua ~/scripts/mount.lua
+exec --no-startup-id lua ~/.config/scripts/mount.lua
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -212,7 +212,7 @@ bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 10%-
 bindsym XF86Display exec xrandr --output eDP-1 --auto --output DP-2 --right-of eDP-1
 
 # air plane mode button
-bindsym XF86WLAN exec lua ~/scripts/internet-panic.lua
+bindsym XF86WLAN exec lua ~/.config/scripts/internet-panic.lua
 
 bindsym XF86Tools exec kitty -d ~/.config --hold sh -c "nvim"
 
