@@ -3,4 +3,4 @@ configuration {
  font: "hack 10";
  combi-modi: "window,drun,ssh";
  }
-@theme "purple"
+@theme "~/.local/share/rofi/themes/simple-tokyonight.rasi"

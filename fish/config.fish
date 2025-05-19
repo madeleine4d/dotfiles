@@ -9,4 +9,8 @@ set -g fish_key_bindings fish_vi_key_bindings
 
 set -gx EDITOR nvim
 set fish_greeting
-neofetch
+
+# aliases:
+
+alias ls="ls -a --color=auto"
+alias mdrives="lua ~/.config/scripts/mount.lua"
