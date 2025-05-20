@@ -15,25 +15,24 @@ DEFAULT_COLOR = "#FEC0CE"
 MUTED_COLOR = "A0A0A0"
 
 -- functions
-function MoveSintksToNewDefault(defaultSink)
-	local sinkInput = T.Run("pactl list sink-inputs | grep 'Sink Input #'")
-	sinkInput = T.Split(sinkInput, "#")[2]
-	sinkInput = T.Split(sinkInput, "\n")[1]
-	T.Run(string.format("pactl move-sink-input %s %s", sinkInput, defaultSink))
-end
-
 function GetSinks()
-	local sinksR = T.Split(T.Run("pactl list sinks |grep Name: "), "\n")
-	local sinks = {}
-	for i, sink in pairs(sinksR) do
-		sink = T.Split(sink, " ")
-		table.insert(sinks, sink[2])
+	local statusStr = T.Run("wpctl status -n | grep '_output.' |grep 'vol'")
+	local statusTable = T.Split(statusStr, "\n")
+
+	local cleanTable = {}
+
+	for i, t in pairs(statusTable) do
+		local valueDirty = T.Split(T.Split(t, ".")[1], " ")
+		local value = valueDirty[#valueDirty]
+		cleanTable[i] = value
 	end
-	return sinks
+
+	return cleanTable
 end
 
 function GetDefaultSink()
-	return T.Split(T.Run("pactl get-default-sink"), "\n")[1]
+	local dirty = T.Split(T.Split(T.Run("wpctl status -n | grep '_output.' |grep '*'"), ".")[1], " ")
+	return dirty[#dirty]
 end
 
 function SwitchToNextAudioDevice()
@@ -45,12 +44,11 @@ function SwitchToNextAudioDevice()
 	local defaultSinkIndex = T.TableInvert(sinks)[defaultSink]
 	defaultSinkIndex = (math.fmod((defaultSinkIndex + #sinks), #sinks) + 1)
 	defaultSink = sinks[defaultSinkIndex]
-	T.Run("pactl set-default-sink " .. defaultSink)
-	MoveSintksToNewDefault(defaultSink)
+	T.Run("wpctl set-default " .. defaultSink)
 end
 
 function GetVol()
-	local vol = T.Split(T.Run(string.format("pactl get-sink-volume @DEFAULT_SINK@ | grep -o '[0-9]\\+'")), "\n")[2]
+	local vol = T.Split(T.Run(string.format("wpctl get-volume @DEFAULT_SINK@")), ": ")[2]
 	return vol
 end
 
@@ -63,33 +61,36 @@ function GetMute()
 	end
 end
 
-local vol = tonumber(GetVol())
-
 -- handeler
 if arg[1] == "1" then
 	SwitchToNextAudioDevice()
-elseif arg[1] == "up" and vol <= 200 then
-	vol = vol + 5
-	T.Run(string.format("pactl set-sink-volume @DEFAULT_SINK@ %s%%", tostring(vol)))
+	T.Run("pkill -RTMIN+1 i3blocks")
+end
+
+local vol = tonumber(GetVol())
+
+if arg[1] == "up" and vol <= 2 then
+	vol = vol + 0.05
+	T.Run(string.format("wpctl set-volume @DEFAULT_SINK@ %s%%", tostring(vol * 100)))
 elseif arg[1] == "down" and vol >= 0 then
-	vol = vol - 5
-	T.Run(string.format("pactl set-sink-volume @DEFAULT_SINK@ %s%%", tostring(vol)))
+	vol = vol - 0.05
+	T.Run(string.format("wpctl set-volume @DEFAULT_SINK@ %s%%", tostring(vol * 100)))
 elseif arg[1] == "mute" or arg[1] == "3" then
-	T.Run(string.format("pactl set-sink-mute @DEFAULT_SINK@ toggle"))
+	T.Run(string.format("wpctl set-mute @DEFAULT_SINK@ toggle"))
 end
 
 local symbol
 if GetMute() then
 	symbol = AUDIO_MUTE_SYMBOL
-elseif vol > 50 then
+elseif vol > 0.5 then
 	symbol = AUDIO_HIGH_SYMBOL
-elseif vol > 10 then
+elseif vol > 0.1 then
 	symbol = AUDIO_MED_SYMBOL
 else
 	symbol = AUDIO_LOW_SYMBOL
 end
 
-local message = symbol .. "  " .. GetVol() .. "%"
+local message = symbol .. "  " .. tostring(math.floor(vol * 100)) .. "%"
 
 print(message)
 
