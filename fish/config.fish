@@ -14,3 +14,9 @@ set fish_greeting
 
 alias ls="ls -a --color=auto"
 alias mdrives="lua ~/.config/scripts/mount.lua"
+
+zoxide init --cmd cd fish | source
+
+
+# Created by `pipx` on 2025-05-20 19:35:13
+set PATH $PATH /home/maddy/.local/bin

@@ -197,8 +197,18 @@ mode "resize" {
         bindsym $mod+r mode "default"
 }
 
+#mode "Hebrew" {
+#        bindsym s exec ~/.config/scripts/bin/python3 ~/.config/i3/scripts/hebrew.py S
+#
+#
+#
+#        bindsym Escape mode "default"
+#}
+
 
 bindsym $mod+r mode "resize"
+
+#bindsym $mod+Shift+w mode "Hebrew"
 
 # Pulse Audio controls
 # bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume 0 +5% #increase sound volume

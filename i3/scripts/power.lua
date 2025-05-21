@@ -53,7 +53,7 @@ for i, symbol in pairs(symbols) do
 	end
 end
 
-if persSum < 7 then
+if persSum < 15 then
 	T.Run("i3-nagbar -t warning -m 'Battery is critically low. Plug it in!'")
 end
 
