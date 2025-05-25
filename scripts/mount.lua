@@ -30,6 +30,6 @@ end
 local drives = GetDriveList()
 
 for i = 1, #drives, 1 do
-	Run("udisksctl mount -b /dev/" .. drives[i] .. "p1")
+	Run("udisksctl mount -p /dev/" .. drives[i] .. "p1")
 	print(drives[i] .. "p1 mount attempted\n")
 end

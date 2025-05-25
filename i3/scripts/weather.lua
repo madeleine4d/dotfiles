@@ -6,7 +6,7 @@ local weather = T.Split(T.Run("curl -Ss 'v1.wttr.in?m&format=%C\\n%t'"), "\n")
 
 local message
 
-if weather[1] == "Cloudy" then
+if weather[1] == "Overcast" then
 	message = symbols[4] .. weather[2]
 elseif weather[1] == "Sunny" then
 	message = symbols[3] .. weather[2]
@@ -20,6 +20,8 @@ elseif weather[1] == "Hail" then
 	message = symbols[7] .. weather[2]
 elseif weather[1] == "Fog" or weather[1] == "Mist" then
 	message = symbols[1] .. weather[2]
+elseif T.Split(weather[1], " ")[1] == "Unknown" and T.Split(weather[1], " ")[2] == "location;" then
+	message = "loc err"
 else
 	message = weather[1] .. " " .. weather[#weather]
 end

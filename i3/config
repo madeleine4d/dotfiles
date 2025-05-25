@@ -28,7 +28,7 @@ exec --no-startup-id dex --autostart --environment i3
 
 # xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
 # screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -i ~/.config/i3/lock-pic.png --nofork
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -i ~/Wallpapers/chihiro014.jpg --nofork
 
 exec --no-startup-id lua ~/.config/i3/scripts/
 
@@ -170,8 +170,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
 
 # run locker
-bindsym $mod+q exec i3lock -i ~/.config/i3/lock-pic.png
-
+bindsym $mod+q exec i3lock -i ~/Wallpapers/chihiro014.jpg
 # resize window (you can also use the mouse for that)
 mode "resize" {
         # These bindings trigger as soon as you enter the resize mode
