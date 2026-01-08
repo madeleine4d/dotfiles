@@ -2,6 +2,11 @@ T = dofile("/home/maddy/.config/scripts/maddy_tools.lua")
 
 local bats = T.Split(T.Run("ls /sys/class/power_supply/ | grep -o BAT[0-9]"), "\n")
 
+if #bats < 1 then
+	print("no bat")
+	return
+end
+
 local stats = {}
 
 local pers = {}
@@ -15,12 +20,17 @@ local charging = " "
 local discharging = " "
 local symbols = {}
 local persSum = 0
+local chargingNow = false
 
 for i, bat in pairs(bats) do
 	local stat = T.Split(T.Run(string.format("cat /sys/class/power_supply/%s/status", bat)), "\n")[1]
 	local per = T.Split(T.Run(string.format("cat /sys/class/power_supply/%s/capacity", bat)), "\n")[1]
 	table.insert(stats, stat)
 	table.insert(pers, per)
+
+	--test sets
+	--pers = { "5", "5" }
+	--stats = { "Not Charging", "Not Charging" }
 
 	-- set symbols
 	if tonumber(pers[i]) > 80 then
@@ -31,11 +41,12 @@ for i, bat in pairs(bats) do
 		symbols[i] = bs2
 	elseif tonumber(pers[i]) > 20 then
 		symbols[i] = bs1
-	elseif tonumber(pers[i]) > 0 then
+	elseif tonumber(pers[i]) >= 0 then
 		symbols[i] = bs0
 	end
 
 	if stats[i] == "Charging" then
+		chargingNow = true
 		symbols[i] = charging .. symbols[i]
 	elseif stats[i] == "Discharging" then
 		symbols[i] = discharging .. symbols[i]
@@ -53,7 +64,7 @@ for i, symbol in pairs(symbols) do
 	end
 end
 
-if persSum < 15 then
+if persSum < 15 and not chargingNow then
 	T.Run("i3-nagbar -t warning -m 'Battery is critically low. Plug it in!'")
 end
 
