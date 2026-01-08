@@ -24,9 +24,9 @@ if [[ $BLOCK_BUTTON == 1 ]]; then
 fi
 
 if [[ $a == 0 ]]; then
-  date '+%d %b %H:%M'
+  TZ='America/Denver' date '+%d %b %H:%M'
 fi
 
 if [[ $a == 1 ]]; then
-  date '+%H:%M:%S'
+  TZ='America/Denver' date '+%H:%M:%S'
 fi
